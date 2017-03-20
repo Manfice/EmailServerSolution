@@ -20,7 +20,7 @@ namespace Email.Service.Web.Infrastructure.Identity
             else
             {
                 var ident = await uManager.CreateIdentityAsync(usr, "Custom");
-                var authTicket = new AuthenticationTicket(ident, new AuthenticationProperties {ExpiresUtc =DateTimeOffset.Now.AddMinutes(30)});
+                var authTicket = new AuthenticationTicket(ident, new AuthenticationProperties {ExpiresUtc =DateTimeOffset.Now.AddMinutes(300)});
                 context.Validated(authTicket);
                 context.Request.Context.Authentication.SignIn(ident);
             }

@@ -1,0 +1,3 @@
+﻿Поиск по имп клиенту:
+                    var d = client.Folders.Inbox.Search($"SINCE {dt}"); 
+где значения можно получать путем запросов : https://tools.ietf.org/html/rfc3501#section-6.4.4

@@ -5,6 +5,7 @@ namespace Email.Agent.TestData
 {
     public class TestEmails
     {
+
         private readonly List<EmailData> _emails = new List<EmailData>();
 
         public TestEmails()
@@ -18,5 +19,6 @@ namespace Email.Agent.TestData
         {
             return _emails;
         }
+
     }
 }

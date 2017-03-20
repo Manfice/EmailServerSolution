@@ -76,11 +76,11 @@
   <ItemGroup>
     <Compile Include="Configurations\IdentityConfig.cs" />
     <Compile Include="Context\IdentityModels.cs" />
+    <Compile Include="Entities\Email.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Entities\" />
     <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
