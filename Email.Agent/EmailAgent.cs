@@ -26,8 +26,8 @@ namespace Email.Agent
                 if (!client.Connect()) continue;
                 if (client.Login(data.Login, data.Password))
                 {
-                    var dt = new EmailHelpers().DateForEmailFiler(DateTime.Now);
-                    var d = client.Folders.Inbox.Search($"ON {dt}").Where(message => message.Attachments.Any(attachment => attachment.FileName.EndsWith(".csv")||attachment.FileName.EndsWith(".xls")||attachment.FileName.EndsWith(".xlsx"))); 
+                    var dt = new EmailHelpers().DateForEmailFiler(DateTime.Now.AddDays(-5));
+                    var d = client.Folders.Inbox.Search($"SINCE {dt}").Where(message => message.Attachments.Any(attachment => attachment.FileName.EndsWith(".csv")||attachment.FileName.EndsWith(".xls")||attachment.FileName.EndsWith(".xlsx"))); 
                     result.Add($"{data.Email} is successful authenticated at {DateTime.Now.ToLongDateString()}, mess: {string.Join(" / ", d.Select(message => message.Subject))}");
                 }
                 else
