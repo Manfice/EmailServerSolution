@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Email.Domain", "Email.Domai
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Email.DataAccess", "Email.DataAccess\Email.DataAccess.csproj", "{CCB391A7-3BC0-4F96-9F60-B606B0DC6D5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Email.Agent", "Email.Agent\Email.Agent.csproj", "{35B618A2-C997-4AEC-B241-5FF3374BC52F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{CCB391A7-3BC0-4F96-9F60-B606B0DC6D5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCB391A7-3BC0-4F96-9F60-B606B0DC6D5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCB391A7-3BC0-4F96-9F60-B606B0DC6D5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35B618A2-C997-4AEC-B241-5FF3374BC52F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35B618A2-C997-4AEC-B241-5FF3374BC52F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35B618A2-C997-4AEC-B241-5FF3374BC52F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35B618A2-C997-4AEC-B241-5FF3374BC52F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -213,11 +213,13 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MailTelemetryController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="ErrorHandler\AiHandleErrorAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\Identity\BarierTokenServerProvider.cs" />
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -305,6 +307,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Email.Agent\Email.Agent.csproj">
+      <Project>{35b618a2-c997-4aec-b241-5ff3374bc52f}</Project>
+      <Name>Email.Agent</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Email.DataAccess\Email.DataAccess.csproj">
       <Project>{ccb391a7-3bc0-4f96-9f60-b606b0dc6d5e}</Project>
       <Name>Email.DataAccess</Name>

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http.Dependencies;
+using Email.DataAccess.IRepositories;
+using Email.DataAccess.Repositories;
 using Ninject;
+using Ninject.Web.Common;
 
 namespace Email.Service.Web.Infrastructure
 {
@@ -40,7 +43,7 @@ namespace Email.Service.Web.Infrastructure
         /// </summary>
         private void AddBindings()
         {
-
+            _kernel.Bind<IUser>().To<DbUserRepository>().InRequestScope();
         }
     }
 }
