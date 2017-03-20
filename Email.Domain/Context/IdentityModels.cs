@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Data.Entity;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -17,16 +18,30 @@ namespace Email.Domain.Context
         }
     }
 
+    public class ApplicationRole : IdentityRole
+    {
+        public ApplicationRole()
+        { }
+
+        public ApplicationRole(string name) : base(name) { }
+    }
+
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("EmailDatabase", throwIfV1Schema: false)
         {
+            Database.SetInitializer(new DbInitiliser());
         }
 
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
         }
+    }
+
+    public class DbInitiliser : CreateDatabaseIfNotExists<ApplicationDbContext>
+    {
+        
     }
 }

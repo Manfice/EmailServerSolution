@@ -1,3 +1,6 @@
+using System.Web.Mvc;
+using Email.Service.Web.Infrastructure;
+
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Email.Service.Web.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(Email.Service.Web.App_Start.NinjectWebCommon), "Stop")]
 
@@ -61,6 +64,7 @@ namespace Email.Service.Web.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
+            DependencyResolver.SetResolver(new NinjectDependencyResolver(kernel));
         }        
     }
 }

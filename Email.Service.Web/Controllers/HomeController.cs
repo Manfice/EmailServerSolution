@@ -6,11 +6,11 @@ using System.Web.Mvc;
 
 namespace Email.Service.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : ControllerBase
     {
         public ActionResult Index()
         {
-            return View();
+            return View(UserManager().Users.ToList());
         }
 
         public ActionResult About()
