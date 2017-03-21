@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Email.Agent;
 
 namespace Email.Service.Web
 {
@@ -18,6 +19,26 @@ namespace Email.Service.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            StartEmailAgent();
+        }
+
+        protected void Application_End()
+        {
+            StopEmailAgent();
+        }
+
+        protected void Application_BeginRequest()
+        {
+        }
+
+        private static void StartEmailAgent()
+        {
+            EmailAgentManager.StartAgent("localhost", 4);
+        }
+
+        private static void StopEmailAgent()
+        {
+            EmailAgentManager.StopAgent();
         }
     }
 }

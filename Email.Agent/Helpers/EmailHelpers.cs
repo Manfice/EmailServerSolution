@@ -4,7 +4,7 @@ namespace Email.Agent.Helpers
 {
     public class EmailHelpers : IDisposable
     {
-        enum MonthName
+        private enum MonthName
         {
             Jan = 1, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
         }

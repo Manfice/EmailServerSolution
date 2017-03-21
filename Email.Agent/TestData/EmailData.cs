@@ -4,6 +4,7 @@ namespace Email.Agent.TestData
 {
     public class EmailData
     {
+        public Guid Guid { get; set; }
         public string Email { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
@@ -19,6 +20,7 @@ namespace Email.Agent.TestData
 
         public EmailData()
         {
+            Guid = Guid.NewGuid();
             CreatedTime = DateTime.Now;
             AttamptsToConnect = 5;
             WaitBetweenAttampts = TimeSpan.FromMinutes(5);
@@ -26,6 +28,7 @@ namespace Email.Agent.TestData
 
         public EmailData(TimeSpan wait)
         {
+            Guid = Guid.NewGuid();
             CreatedTime = DateTime.Now;
             AttamptsToConnect = 5;
             WaitBetweenAttampts = wait;
