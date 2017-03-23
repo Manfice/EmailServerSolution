@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Email.Agent.Helpers;
 using Email.Agent.TestData;
+using Email.DataAccess.Repositories;
 using ImapX;
 using ImapX.Enums;
 using Newtonsoft.Json;
@@ -28,7 +30,7 @@ namespace Email.Agent
 
         private EventingBasicConsumer _consumer;
 
-
+        private Regex searchFileExt = new Regex("^.*\\.(csv|txt|xls|xlsx|zip|rar)$");
 
         public  EmailAgent(string queueName, string host)
         {
@@ -71,14 +73,16 @@ namespace Email.Agent
             {
                 data.Result = new EmailLoadResult
                 {
-                    Result = $"{data.Email} connecting false at {DateTime.Now.ToLongDateString()} with agent: {AgentGuid}"
+                    Result = $"{data.Email} connecting false at {DateTime.Now.ToLongDateString()} with agent: {AgentGuid}",
+                    Success = false
                 };
                 return data;
             }
             if (client.Login(data.Login, data.Password))
             {
-                var dt = new EmailHelpers().DateForEmailFiler(DateTime.Now.AddDays(-5));
-                var d = client.Folders.Inbox.Search($"SINCE {dt}").Where(message => message.Attachments.Any(attachment => attachment.FileName.EndsWith(".csv") || attachment.FileName.EndsWith(".xls") || attachment.FileName.EndsWith(".xlsx")));
+                var dt = new EmailHelpers().DateForEmailFiler(DateTime.Now.AddDays(-10));
+                var d = client.Folders.Inbox.Search($"SINCE {dt}").Where(message => message.Attachments.Any(attachment => searchFileExt.IsMatch(attachment.FileName)));
+
                 data.Result = new EmailLoadResult()
                 {
                     Result = $"{data.Email} is successful authenticated at {DateTime.Now.ToLongDateString()}, mess: {string.Join(" / ", d.Select(message => message.Subject))} with agent: {AgentGuid}",
@@ -96,24 +100,19 @@ namespace Email.Agent
             return data;
         }
 
-        public void TestRabbitReciever()
+        private List<Message> CheckMessageToDownload(IEnumerable<Message> messages)
         {
-            var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += (sender, ea) =>
+            var result = messages.ToList();
+            if (!result.Any())
             {
-                var body = ea.Body;
-                //Test += Encoding.UTF8.GetString(body);
-                _channel.BasicAck(ea.DeliveryTag, false);
-            };
-            _channel.BasicConsume(QueueName, false, consumer);
-        }
+                return null;
+            }
+            using (var ctx = new DbUserRepository())
+            {
+                
+            }
 
-        public void TestRabbitSender()
-        {
-            var message = "Hello my queue!";
-            var body = Encoding.UTF8.GetBytes(message);
-            _properties.Persistent = true;
-            _channel.BasicPublish("", QueueName, _properties, body);
+            return result;
         }
 
         public void Dispose()

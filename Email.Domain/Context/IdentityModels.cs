@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Email.Domain.Entities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -38,6 +39,8 @@ namespace Email.Domain.Context
         {
             return new ApplicationDbContext();
         }
+
+        public DbSet<EmailMessage> EmailMessages { get; set; }
     }
 
     public class DbInitiliser : CreateDatabaseIfNotExists<ApplicationDbContext>

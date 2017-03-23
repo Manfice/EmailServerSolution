@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Email.Agent.TestData;
 
 namespace Email.Service.Web.Controllers
 {
@@ -10,6 +11,7 @@ namespace Email.Service.Web.Controllers
     {
         public ActionResult Index()
         {
+            new TestEmails().AddToQueue();
             return View(UserManager().Users.ToList());
         }
 

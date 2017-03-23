@@ -65,6 +65,12 @@
   <ItemGroup>
     <Content Include="notes.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Email.DataAccess\Email.DataAccess.csproj">
+      <Project>{ccb391a7-3bc0-4f96-9f60-b606b0dc6d5e}</Project>
+      <Name>Email.DataAccess</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

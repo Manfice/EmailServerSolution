@@ -5,9 +5,14 @@ using Email.Domain.Context;
 
 namespace Email.DataAccess.Repositories
 {
-    public class DbUserRepository : IUser
+    public class DbUserRepository : IUser, IDisposable
     {
         private readonly ApplicationDbContext _context = new ApplicationDbContext();
+
+        public void Dispose()
+        {
+            
+        }
 
         public IEnumerable<ApplicationUser> GetUserList()
         {
