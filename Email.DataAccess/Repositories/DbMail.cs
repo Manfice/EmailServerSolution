@@ -24,5 +24,11 @@ namespace Email.DataAccess.Repositories
                         r.ReceipientMailAddress.Equals(recipient, StringComparison.CurrentCultureIgnoreCase) &&
                         r.Received >= date).Select(message => message.Uid);
         }
+
+        public void SaveMessage(EmailMessage message)
+        {
+            _context.EmailMessages.Add(message);
+            _context.SaveChanges();
+        }
     }
 }

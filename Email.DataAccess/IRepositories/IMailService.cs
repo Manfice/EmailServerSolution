@@ -8,5 +8,6 @@ namespace Email.DataAccess.IRepositories
     public interface IMailService
     {
         IEnumerable<string> GetReceivedUidsOnDate(DateTime date, string recipient);
+        void SaveMessage(EmailMessage message);
     }
 }

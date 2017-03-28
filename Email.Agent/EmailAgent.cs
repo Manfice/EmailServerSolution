@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.IO.Compression;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,6 +13,8 @@ using ImapX.Enums;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using SharpCompress.Readers;
+using Email.Domain.Entities;
 
 namespace Email.Agent
 {
@@ -22,7 +24,6 @@ namespace Email.Agent
         //RabbitMQ connections and properties
         private readonly IConnection _connection;
         private readonly IModel _channel;
-        private IBasicProperties _properties;
         private string QueueName { get; }
 
         //
@@ -32,14 +33,13 @@ namespace Email.Agent
         private EventingBasicConsumer _consumer;
 
         private readonly Regex _searchFileExt = new Regex("^.*\\.(csv|txt|xls|xlsx|zip|rar)$");
+        private readonly Regex _archFileExt = new Regex("^.*\\.(zip|rar)$");
 
-        private const string _savePath = @"C:\DownloadedFiles\";
+        private const string SavePath = @"C:\DownloadedFiles\";
 
         //ImapX helpers
         private IList<Message> _messageList;
         private IEnumerable<string> _receivedMessagesUids;
-        private Attachment _currentFile;
-        private Message _currentMessage;
 
 
         public  EmailAgent(string queueName, string host)
@@ -57,9 +57,9 @@ namespace Email.Agent
 
         private static void CheckFilePath()
         {
-            if (!Directory.Exists(_savePath))
+            if (!Directory.Exists(SavePath))
             {
-                Directory.CreateDirectory(_savePath);
+                Directory.CreateDirectory(SavePath);
             }
         }
         private void AddListenerQueue()
@@ -75,11 +75,11 @@ namespace Email.Agent
                 if (result.Result.Success)
                 {
                     EmailAgentManager.SuccessRequests.Add(result);
-
                 }
                 else
                 {
                     EmailAgentManager.BadRequests.Add(result);
+                    Dispose(100,result.Result.Result);
                 }
                 _channel.BasicAck(args.DeliveryTag, false);
             };
@@ -91,6 +91,7 @@ namespace Email.Agent
             var client = new ImapClient(data.ImapServer, data.Port, data.Ssl);
             try
             {
+                client.Connect();
                 client.Login(data.Login, data.Password);
                 var dt = new EmailHelpers().DateForEmailFiler(data.InquireDate);
                 _messageList = client.Folders.Inbox.Search($"SINCE {dt}").Where(message => message.Attachments.Any(attachment => _searchFileExt.IsMatch(attachment.FileName))).ToList();
@@ -100,47 +101,104 @@ namespace Email.Agent
                     foreach (var message in _messageList)
                     {
                         if (_receivedMessagesUids.Contains(message.UId.ToString())) continue;
-                        message.Download(MessageFetchMode.Attachments, true);
-                        foreach (var attachment in _currentMessage.Attachments)
+                        foreach (var attachment in message.Attachments)
                         {
                             if (!attachment.Downloaded)
                             {
                                 attachment.Download();
-
                             }
-                            var dir = $"{_savePath}\\{data.Email}\\{DateTime.Today.ToLongDateString()}";
-                            var path = Path.Combine(dir, attachment.FileName);
-                            if (!Directory.Exists(dir))
+                            var dir = $"{SavePath}{data.Email}\\{DateTime.Today.ToLongDateString()}";
+                            var mes = SaveAttachmentToDisk(attachment, dir);
+                            SaveResultToDatabase(new EmailMessage
                             {
-                                Directory.CreateDirectory(dir);
-                            }
-                            if (!File.Exists(path))
-                            {
-                                File.WriteAllBytes(path, attachment.FileData);
-                            }
-
+                                Parsed = false,
+                                Subject =  message.Subject,
+                                Received = DateTime.Now,
+                                Uid = message.UId.ToString(),
+                                ReceipientMailAddress = data.Email,
+                                FileAttachName = mes,
+                                From = message.From.Address
+                            });
                         }
                     }
+                    data.Result = new EmailLoadResult()
+                    {
+                        Result =
+                            $"{data.Email} is successful authenticated at {DateTime.Now.ToLongDateString()}, mess: {string.Join(" / ", _messageList.Select(message => message.Subject))} with agent: {AgentGuid}",
+                        Success = true
+                    };
                 }
-
-                data.Result = new EmailLoadResult()
+                else
                 {
-                    Result = $"{data.Email} is successful authenticated at {DateTime.Now.ToLongDateString()}, mess: {string.Join(" / ", _messageList.Select(message => message.Subject))} with agent: {AgentGuid}",
-                    Success = true
-                };
-
+                    data.Result = new EmailLoadResult()
+                    {
+                        Result =
+                            $"{data.Email} is successful authenticated at {DateTime.Now.ToLongDateString()}, but no files recieved with agent: {AgentGuid}",
+                        Success = true
+                    };
+                }
             }
             catch (Exception e)
             {
                 data.Result = new EmailLoadResult()
                 {
-                    Result = $"{data.Email} has an exeption {e.Message} at {DateTime.Now.ToLongDateString()} with agent: {AgentGuid}",
+                    Result = $"{data.Email} throw exception:\"{e.Message}\" at {DateTime.Now.ToLongDateString()} with agent: {AgentGuid}",
                     Success = false
                 };
-
             }
-
+            client.Logout();
             return data;
+        }
+
+        private string SaveAttachmentToDisk(Attachment attachment, string dir)
+        {
+            try
+            {
+                if (!Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+                var path = Path.Combine(dir, attachment.FileName);
+                if (_archFileExt.IsMatch(attachment.FileName))
+                {
+                    using (var st = new MemoryStream(attachment.FileData))
+                    using (var file = ReaderFactory.Open(st))
+                    {
+                        while (file.MoveToNextEntry())
+                        {
+                            if (!file.Entry.IsDirectory)
+                            {
+                                file.WriteEntryToDirectory(dir, new ExtractionOptions { Overwrite = true });
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (!File.Exists(path))
+                    {
+                        File.WriteAllBytes(path, attachment.FileData);
+                    }
+                    else
+                    {
+                        File.Delete(path);
+                        File.WriteAllBytes(path, attachment.FileData);
+                    }
+                }
+                return path;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        private static void SaveResultToDatabase(EmailMessage message)
+        {
+            using (var ctx = new DbMailRepository())
+            {
+                ctx.SaveMessage(message);
+            }
         }
 
         private void GetReceivedUids(EmailData account)
@@ -154,6 +212,12 @@ namespace Email.Agent
         public void Dispose()
         {
             _channel.Close(200, $"Application with id:{AgentGuid} shutdown at {DateTime.Now}");
+            _connection.Close();
+        }
+
+        private void Dispose(ushort code, string message)
+        {
+            _channel.Close(code, message);
             _connection.Close();
         }
     }
