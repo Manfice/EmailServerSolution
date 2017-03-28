@@ -43,7 +43,7 @@ namespace Email.Service.Web.Infrastructure
         /// </summary>
         private void AddBindings()
         {
-            _kernel.Bind<IUser>().To<DbUserRepository>().InRequestScope();
+            _kernel.Bind<IMailService>().To<DbMailRepository>().InRequestScope();
         }
     }
 }

@@ -14,11 +14,11 @@ namespace Email.Service.Web.Controllers
     [Authorize(Roles = "Administrators")]
     public class MailTelemetryController : ApiController
     {
-        private readonly IUser _user;
+        private readonly IMailService _mailService;
 
-        public MailTelemetryController(IUser repoUser)
+        public MailTelemetryController(IMailService repoMailService)
         {
-            _user = repoUser;
+            _mailService = repoMailService;
         }
 
         public IHttpActionResult GetResp()

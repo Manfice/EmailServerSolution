@@ -30,10 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ImapX, Version=2.0.0.18, Culture=neutral, PublicKeyToken=5992873d65130d1f, processorArchitecture=MSIL">
-      <HintPath>..\packages\ImapX.2.0.0.18\lib\net452\ImapX.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -55,17 +51,23 @@
     <Compile Include="EmailAgent.cs" />
     <Compile Include="EmailAgentManager.cs" />
     <Compile Include="Helpers\EmailHelpers.cs" />
+    <Compile Include="Helpers\ServerCallCompletedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestData\EmailData.cs" />
     <Compile Include="TestData\TestEmails.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="notes.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Downloads\imapx-43652\ImapX\ImapX.csproj">
+      <Project>{fdb65a6e-dd65-4d17-b522-e59ce7de5e00}</Project>
+      <Name>ImapX</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Email.DataAccess\Email.DataAccess.csproj">
       <Project>{ccb391a7-3bc0-4f96-9f60-b606b0dc6d5e}</Project>
       <Name>Email.DataAccess</Name>

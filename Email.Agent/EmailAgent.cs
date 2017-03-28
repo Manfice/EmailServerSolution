@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -30,7 +31,16 @@ namespace Email.Agent
 
         private EventingBasicConsumer _consumer;
 
-        private Regex searchFileExt = new Regex("^.*\\.(csv|txt|xls|xlsx|zip|rar)$");
+        private readonly Regex _searchFileExt = new Regex("^.*\\.(csv|txt|xls|xlsx|zip|rar)$");
+
+        private const string _savePath = @"C:\DownloadedFiles\";
+
+        //ImapX helpers
+        private IList<Message> _messageList;
+        private IEnumerable<string> _receivedMessagesUids;
+        private Attachment _currentFile;
+        private Message _currentMessage;
+
 
         public  EmailAgent(string queueName, string host)
         {
@@ -42,8 +52,16 @@ namespace Email.Agent
             _channel.BasicQos(0, 1, false);
             _channel.QueueDeclare(queueName, true, false, false, null);
             AddListenerQueue();
+            CheckFilePath();
         }
 
+        private static void CheckFilePath()
+        {
+            if (!Directory.Exists(_savePath))
+            {
+                Directory.CreateDirectory(_savePath);
+            }
+        }
         private void AddListenerQueue()
         {
             _consumer = new EventingBasicConsumer(_channel);
@@ -52,10 +70,12 @@ namespace Email.Agent
                 var body = args.Body;
                 var emailClientCred = Encoding.UTF8.GetString(body);
                 var data = JsonConvert.DeserializeObject<EmailData>(emailClientCred);
+                GetReceivedUids(data);
                 var result = TestEmails(data);
                 if (result.Result.Success)
                 {
                     EmailAgentManager.SuccessRequests.Add(result);
+
                 }
                 else
                 {
@@ -69,50 +89,66 @@ namespace Email.Agent
         public EmailData TestEmails(EmailData data)
         {
             var client = new ImapClient(data.ImapServer, data.Port, data.Ssl);
-            if (!client.Connect())
+            try
             {
-                data.Result = new EmailLoadResult
+                client.Login(data.Login, data.Password);
+                var dt = new EmailHelpers().DateForEmailFiler(data.InquireDate);
+                _messageList = client.Folders.Inbox.Search($"SINCE {dt}").Where(message => message.Attachments.Any(attachment => _searchFileExt.IsMatch(attachment.FileName))).ToList();
+
+                if (_messageList.Any())
                 {
-                    Result = $"{data.Email} connecting false at {DateTime.Now.ToLongDateString()} with agent: {AgentGuid}",
-                    Success = false
-                };
-                return data;
-            }
-            if (client.Login(data.Login, data.Password))
-            {
-                var dt = new EmailHelpers().DateForEmailFiler(DateTime.Now.AddDays(-10));
-                var d = client.Folders.Inbox.Search($"SINCE {dt}").Where(message => message.Attachments.Any(attachment => searchFileExt.IsMatch(attachment.FileName)));
+                    foreach (var message in _messageList)
+                    {
+                        if (_receivedMessagesUids.Contains(message.UId.ToString())) continue;
+                        message.Download(MessageFetchMode.Attachments, true);
+                        foreach (var attachment in _currentMessage.Attachments)
+                        {
+                            if (!attachment.Downloaded)
+                            {
+                                attachment.Download();
+
+                            }
+                            var dir = $"{_savePath}\\{data.Email}\\{DateTime.Today.ToLongDateString()}";
+                            var path = Path.Combine(dir, attachment.FileName);
+                            if (!Directory.Exists(dir))
+                            {
+                                Directory.CreateDirectory(dir);
+                            }
+                            if (!File.Exists(path))
+                            {
+                                File.WriteAllBytes(path, attachment.FileData);
+                            }
+
+                        }
+                    }
+                }
 
                 data.Result = new EmailLoadResult()
                 {
-                    Result = $"{data.Email} is successful authenticated at {DateTime.Now.ToLongDateString()}, mess: {string.Join(" / ", d.Select(message => message.Subject))} with agent: {AgentGuid}",
+                    Result = $"{data.Email} is successful authenticated at {DateTime.Now.ToLongDateString()}, mess: {string.Join(" / ", _messageList.Select(message => message.Subject))} with agent: {AgentGuid}",
                     Success = true
                 };
+
             }
-            else
+            catch (Exception e)
             {
                 data.Result = new EmailLoadResult()
                 {
-                    Result = $"{data.Email} login false at {DateTime.Now.ToLongDateString()} with agent: {AgentGuid}",
+                    Result = $"{data.Email} has an exeption {e.Message} at {DateTime.Now.ToLongDateString()} with agent: {AgentGuid}",
                     Success = false
                 };
+
             }
+
             return data;
         }
 
-        private List<Message> CheckMessageToDownload(IEnumerable<Message> messages)
+        private void GetReceivedUids(EmailData account)
         {
-            var result = messages.ToList();
-            if (!result.Any())
+            using (var ctx = new DbMailRepository())
             {
-                return null;
+                _receivedMessagesUids = ctx.GetReceivedUidsOnDate(account.InquireDate, account.Email)?? new List<string>();
             }
-            using (var ctx = new DbUserRepository())
-            {
-                
-            }
-
-            return result;
         }
 
         public void Dispose()

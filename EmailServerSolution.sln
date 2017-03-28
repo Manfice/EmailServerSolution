@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Email.DataAccess", "Email.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Email.Agent", "Email.Agent\Email.Agent.csproj", "{35B618A2-C997-4AEC-B241-5FF3374BC52F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImapX", "..\..\..\Downloads\imapx-43652\ImapX\ImapX.csproj", "{FDB65A6E-DD65-4D17-B522-E59CE7DE5E00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{35B618A2-C997-4AEC-B241-5FF3374BC52F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35B618A2-C997-4AEC-B241-5FF3374BC52F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35B618A2-C997-4AEC-B241-5FF3374BC52F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDB65A6E-DD65-4D17-B522-E59CE7DE5E00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDB65A6E-DD65-4D17-B522-E59CE7DE5E00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDB65A6E-DD65-4D17-B522-E59CE7DE5E00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDB65A6E-DD65-4D17-B522-E59CE7DE5E00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

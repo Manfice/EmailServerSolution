@@ -16,6 +16,7 @@ namespace Email.Agent.TestData
         //промежуток времени между попытками. по умолчанию 5 минут
         public TimeSpan WaitBetweenAttampts { get; set; }
         public DateTime CreatedTime { get; private set; }
+        public DateTime InquireDate { get; set; }
         public virtual EmailLoadResult Result { get; set; }
 
         public EmailData()
@@ -23,7 +24,17 @@ namespace Email.Agent.TestData
             Guid = Guid.NewGuid();
             CreatedTime = DateTime.Now;
             AttamptsToConnect = 5;
+            InquireDate = DateTime.Today;
             WaitBetweenAttampts = TimeSpan.FromMinutes(5);
+        }
+
+        public EmailData(DateTime inquiredate)
+        {
+            Guid = Guid.NewGuid();
+            CreatedTime = DateTime.Now;
+            AttamptsToConnect = 5;
+            WaitBetweenAttampts = TimeSpan.FromMinutes(5);
+            this.InquireDate = inquiredate;
         }
 
         public EmailData(TimeSpan wait)
@@ -32,6 +43,7 @@ namespace Email.Agent.TestData
             CreatedTime = DateTime.Now;
             AttamptsToConnect = 5;
             WaitBetweenAttampts = wait;
+            InquireDate = DateTime.Today;
         }
     }
 

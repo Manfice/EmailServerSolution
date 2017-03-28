@@ -14,7 +14,6 @@ namespace Email.Agent
 {
     public static class EmailAgentManager
     {
-        private static readonly Queue<EmailData> Queue = new Queue<EmailData>(new TestEmails().GetTestListEmails());
 
         private const string QueueName = "EmailsToCheck";
 
@@ -48,14 +47,6 @@ namespace Email.Agent
                 emailAgent.Dispose();
             }
             return;
-        }
-
-        public static void StartQueue()
-        {
-            while (Queue.Count > 0)
-            {
-                var c = Queue.Dequeue();
-            }
         }
     }
 }
