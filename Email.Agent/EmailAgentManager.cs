@@ -30,7 +30,7 @@ namespace Email.Agent
             {
                 foreach (var emailAgent in EmailAgents)
                 {
-                    emailAgent.Dispose();
+                    emailAgent.NeedToDispose = true;
                 }
             }
             for (var i = 0; i < agentCount; i++)
@@ -38,6 +38,11 @@ namespace Email.Agent
                 EmailAgents.Add(new EmailAgent(QueueName, host));
             }
             return;
+        }
+
+        public static void AddAgent(string host)
+        {
+            EmailAgents.Add(new EmailAgent(QueueName, host));
         }
 
         public static void StopAgent()

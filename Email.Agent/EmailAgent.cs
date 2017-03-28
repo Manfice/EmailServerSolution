@@ -29,7 +29,7 @@ namespace Email.Agent
         //
 
         public Guid AgentGuid { get; }
-
+        public bool NeedToDispose { get; set; }
         private EventingBasicConsumer _consumer;
 
         private readonly Regex _searchFileExt = new Regex("^.*\\.(csv|txt|xls|xlsx|zip|rar)$");
@@ -45,6 +45,7 @@ namespace Email.Agent
         public  EmailAgent(string queueName, string host)
         {
             AgentGuid = Guid.NewGuid();
+            NeedToDispose = false;
             QueueName = queueName;
             var factory = new ConnectionFactory() { HostName = host };
             _connection = factory.CreateConnection();
@@ -82,6 +83,10 @@ namespace Email.Agent
                     Dispose(100,result.Result.Result);
                 }
                 _channel.BasicAck(args.DeliveryTag, false);
+                if (NeedToDispose)
+                {
+                    Dispose();
+                }
             };
             _channel.BasicConsume(QueueName, false, _consumer);
         }
