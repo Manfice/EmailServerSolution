@@ -9,7 +9,7 @@ namespace Email.DataAccess.Repositories
 {
     public class DbMailRepository : IMailService, IDisposable
     {
-        private readonly ApplicationDbContext _context = new ApplicationDbContext();
+        private readonly ApplicationDbContext _context = ApplicationDbContext.Create();
 
         public void Dispose()
         {

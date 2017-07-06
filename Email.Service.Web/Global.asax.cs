@@ -33,7 +33,7 @@ namespace Email.Service.Web
 
         private static void StartEmailAgent()
         {
-            EmailAgentManager.StartAgent("localhost", 4);
+            EmailAgentManager.StartAgent("localhost", 1);
         }
 
         private static void StopEmailAgent()

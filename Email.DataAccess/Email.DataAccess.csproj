@@ -57,9 +57,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IRepositories\IFileRepository.cs" />
     <Compile Include="IRepositories\IMailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\DbMail.cs" />
+    <Compile Include="Repositories\FileRepository.cs" />
     <Compile Include="Repositories\RepoBase.cs" />
   </ItemGroup>
   <ItemGroup>

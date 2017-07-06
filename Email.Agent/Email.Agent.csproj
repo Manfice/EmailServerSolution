@@ -31,15 +31,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RabbitMQ.Client, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <HintPath>..\packages\RabbitMQ.Client.4.1.1\lib\net451\RabbitMQ.Client.dll</HintPath>
+      <HintPath>..\packages\RabbitMQ.Client.4.1.3\lib\net451\RabbitMQ.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SharpCompress, Version=0.15.2.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpCompress.0.15.2\lib\net45\SharpCompress.dll</HintPath>
+    <Reference Include="SharpCompress, Version=0.17.1.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.17.1\lib\net45\SharpCompress.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -68,10 +68,6 @@
     <Content Include="notes.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Downloads\imapx-43652\ImapX\ImapX.csproj">
-      <Project>{fdb65a6e-dd65-4d17-b522-e59ce7de5e00}</Project>
-      <Name>ImapX</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Email.DataAccess\Email.DataAccess.csproj">
       <Project>{ccb391a7-3bc0-4f96-9f60-b606b0dc6d5e}</Project>
       <Name>Email.DataAccess</Name>
@@ -79,6 +75,10 @@
     <ProjectReference Include="..\Email.Domain\Email.Domain.csproj">
       <Project>{D1E808E0-5A17-4CA6-873C-7C19B509CA1F}</Project>
       <Name>Email.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ImapX\ImapX.csproj">
+      <Project>{fdb65a6e-dd65-4d17-b522-e59ce7de5e00}</Project>
+      <Name>ImapX</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

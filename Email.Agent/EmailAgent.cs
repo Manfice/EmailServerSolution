@@ -80,7 +80,8 @@ namespace Email.Agent
                 else
                 {
                     EmailAgentManager.BadRequests.Add(result);
-                    Dispose(100,result.Result.Result);
+                    //Dispose(100,result.Result.Result);
+                    //return;
                 }
                 _channel.BasicAck(args.DeliveryTag, false);
                 if (NeedToDispose)
@@ -101,7 +102,7 @@ namespace Email.Agent
                 var dt = new EmailHelpers().DateForEmailFiler(data.InquireDate);
                 _messageList = client.Folders.Inbox.Search($"SINCE {dt}").Where(message => message.Attachments.Any(attachment => _searchFileExt.IsMatch(attachment.FileName))).ToList();
 
-                if (_messageList.Any())
+                if (_messageList != null && _messageList.Any())
                 {
                     foreach (var message in _messageList)
                     {
@@ -151,7 +152,7 @@ namespace Email.Agent
                     Success = false
                 };
             }
-            client.Logout();
+            //client.Logout();
             return data;
         }
 
@@ -174,6 +175,8 @@ namespace Email.Agent
                             if (!file.Entry.IsDirectory)
                             {
                                 file.WriteEntryToDirectory(dir, new ExtractionOptions { Overwrite = true });
+                                return Path.Combine(dir,file.Entry.Key);
+
                             }
                         }
                     }

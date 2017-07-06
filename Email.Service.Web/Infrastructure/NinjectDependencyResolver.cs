@@ -44,6 +44,7 @@ namespace Email.Service.Web.Infrastructure
         private void AddBindings()
         {
             _kernel.Bind<IMailService>().To<DbMailRepository>().InRequestScope();
+            _kernel.Bind<IFileRepository>().To<FileRepository>().InRequestScope();
         }
     }
 }

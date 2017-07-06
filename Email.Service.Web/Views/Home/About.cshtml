@@ -1,7 +1,20 @@
-﻿@{
+﻿@model IEnumerable<List<double>>
+@{
     ViewBag.Title = "About";
 }
+
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
 
+<table class="table table-bordered">
+    @foreach (var item in Model)
+    {
+        <tr>
+            @foreach (var d in item)
+            {
+                <td>@d</td>
+            }
+        </tr>
+    }
+</table>
 <p>Use this area to provide additional information.</p>

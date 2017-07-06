@@ -212,6 +212,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ApiFileMediaController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MailTelemetryController.cs" />
@@ -319,6 +320,10 @@
     <ProjectReference Include="..\Email.Domain\Email.Domain.csproj">
       <Project>{d1e808e0-5a17-4ca6-873c-7c19b509ca1f}</Project>
       <Name>Email.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PriceParse\PriceParse.csproj">
+      <Project>{55e003e9-41a3-4ebf-97d2-0c9735324444}</Project>
+      <Name>PriceParse</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
